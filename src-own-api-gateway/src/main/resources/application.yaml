@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: src-own-api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: test
+          uri: https://api.restful-api.dev/objects
+          predicates:
+            - Path=/objects
+  main:
+    web-application-type: reactive
+  threads:
+    virtual:
+      enabled: true
