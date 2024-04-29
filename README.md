@@ -13,12 +13,10 @@ Este proyecto muestra cómo construir un API Gateway básico utilizando Spring B
 1.  **Configuración del proyecto**
     
     Clona este repositorio en tu máquina local:
-    
-    bash
-    
-    Copy code
-    
-    `git clone https://github.com/luigivis/own-api-gateway.git` 
+
+    ```shell
+    git clone https://github.com/luigivis/own-api-gateway.git`
+    ```
     
 2.  **Estructura del proyecto**
     
