@@ -1,5 +1,6 @@
 package com.luigivis.srcownapigateway.filter;
 
+import com.luigivis.srcownapigateway.interfaces.OwnApiGatewayFilter;
 import jakarta.servlet.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,7 @@ import java.io.IOException;
 
 @Service
 @Slf4j
-public class TestFilter implements GlobalFilter, Filter {
+public class TestFilter implements OwnApiGatewayFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -30,9 +31,4 @@ public class TestFilter implements GlobalFilter, Filter {
         log.info("Exchange {}", exchange);
     }
 
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        log.info("From Filter normal");
-        filterChain.doFilter(servletRequest, servletResponse);
-    }
 }
