@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tomcat.util.bcel.classfile.ClassFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -15,6 +14,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.type.classreading.ClassFormatException;
 import org.springframework.http.HttpMethod;
 
 import java.lang.reflect.Modifier;
@@ -111,7 +111,7 @@ public class ApiGatewayProperties {
         return builderFinal.build();
     }
 
-    public void validateFilter() throws ClassNotFoundException {
+    public void validateFilter() throws ClassFormatException {
         try {
             var filterClass = Class.forName(this.filter);
 
@@ -122,14 +122,13 @@ public class ApiGatewayProperties {
 
 
         } catch (ClassNotFoundException e) {
-            log.info("Error: Class not found");
-            //throw new ClassNotFoundException(e.getMessage());
+            log.info("Error: Class not found \n" + e);
         }
     }
 
     @Bean
     @Order(0)
-    public Boolean validateUniqueFilter(ApplicationContext applicationContext) throws ClassNotFoundException {
+    public Boolean validateUniqueFilter(ApplicationContext applicationContext) throws ClassFormatException {
         if (StringUtils.isBlank(this.filter)) {
             log.info("Filter default is disable, filter not found or filter empty");
             return false;
@@ -144,7 +143,7 @@ public class ApiGatewayProperties {
         }
 
         if (testFilterCount > 1) {
-            throw new IllegalStateException("Error: Multiple implementations of "+this.filter+" were found as GlobalFilters");
+            throw new IllegalStateException("Error: Multiple implementations of " + this.filter + " were found as GlobalFilters");
         }
         if (testFilterCount == 1) {
             log.info("Success: Found one implementation of {} as a OwnApiGatewayFilter", this.filter);
