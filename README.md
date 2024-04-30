@@ -25,48 +25,55 @@ Este proyecto muestra cómo construir un API Gateway básico utilizando Spring B
 ```text
     `src
     ├── main
-    │   ├── java
-    │   │   └── com
-    │   │       └── ejemplo
-    │   │           └── apigateway
-    │   │               ├── ApiGatewayApplication.java
-    │   │               ├── controller
-    │   │               │   └── GatewayController.java
-    │   │               ├── filter
-    │   │               │   └── LoggingFilter.java
-    │   │               └── route
-    │   │                   └── Route.java
-    │   └── resources
-    │       └── application.properties
-    └── test
-        └── java
-            └── com
-                └── ejemplo
-                    └── apigateway
-                        └── ApiGatewayApplicationTests.java
+       ├── java
+       │   └── com
+       │       └── ejemplo
+       │           └── apigateway
+       │               ├── ApiGatewayApplication.java
+       │               ├── controller
+       │               │   └── GatewayController.java
+       │               ├── filter
+       │               │   └── LoggingFilter.java
+       │               └── route
+       │                   └── Route.java
+       └── resources
+           └── application.properties
                         
 ```  
     
 3.  **Implementación del API Gateway**
     
     -   `ApiGatewayApplication.java`: Clase principal de Spring Boot.
-    -   `GatewayController.java`: Controlador que maneja las solicitudes entrantes y enruta a los servicios correspondientes.
-    -   `LoggingFilter.java`: Filtro para registrar las solicitudes entrantes.
-    -   `Route.java`: Clase para definir las rutas y sus correspondientes servicios.
-4.  **Configuración de las rutas**
+    -   `TestFilter.java`: Filtro para registrar las solicitudes entrantes.
+ 
+4. **Configuración de las rutas**
     
-    Define las rutas y sus correspondientes servicios en el archivo `application.properties`:
+      Define las rutas y sus correspondientes servicios en el archivo `application.properties` o `application.yaml`:
     
-    ```properties
+      ```properties
+      # Configuración de las rutas
+      api-gateway.filter=com.luigivis.srcownapigateway.filter.TestFilter
+      api-gateway.routes={name=test, to=https://api.restful-api.dev/, from=/objects/**, method=GET, POST}, {name=test1, to=https://api.restful-api.dev/, from=/objects}, {name=test2, to=https://dog.ceo/, from=/api/**}
+      ```
+      ```yaml
+      # Configuración de las rutas
+      api-gateway:
+      filter: "com.luigivis.srcownapigateway.filter.TestFilter"
+      routes:
+         - name: test
+           to: https://api.restful-api.dev/
+           from: /objects/**
+           method: GET, POST
+       
+         - name: test1
+           to: https://api.restful-api.dev/
+           from: /objects
     
-    # Configuración de las rutas
-    routes.api1.path=/api1/**
-    routes.api1.url=http://localhost:8081
-    
-    routes.api2.path=/api2/**
-    routes.api2.url=http://localhost:8082` 
-    ```
-    Esto enruta las solicitudes con prefijo `/api1/` al servicio en `http://localhost:8081`, y las solicitudes con prefijo `/api2/` al servicio en `http://localhost:8082`.
+         - name: test2
+           to: https://dog.ceo/
+           from: /api/**
+      ```
+      Esto enruta las solicitudes con prefijo `/api1/` al servicio en `http://localhost:8081`, y las solicitudes con prefijo `/api2/` al servicio en `http://localhost:8082`.
     
 5.  **Ejecución del proyecto**
     
