@@ -34,12 +34,11 @@
 
     <distributionManagement>
         <repository>
-            <id>github</id>
-            <name>GitHub OWNER Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/OWNER/REPOSITORY</url>
+            <id>own-api-gateway</id>
+            <name>Own Api Gateway</name>
+            <url>https://maven.pkg.github.com/luigivis/own-api-gateway</url>
         </repository>
     </distributionManagement>
-
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
