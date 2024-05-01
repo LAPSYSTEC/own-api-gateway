@@ -188,10 +188,10 @@ public class ApiGatewayProperties {
                 , connectionTimeout, responseTimeout, trustInsecureSsl);
         var http = new HttpClientProperties();
 
-        if (ObjectUtils.isEmpty(this.connectionTimeout))
+        if (ObjectUtils.isNotEmpty(this.connectionTimeout))
             http.setConnectTimeout(this.connectionTimeout);
 
-        if (ObjectUtils.isEmpty(this.responseTimeout))
+        if (ObjectUtils.isNotEmpty(this.responseTimeout))
             http.setResponseTimeout(Duration.ofSeconds(this.responseTimeout));
 
         var ssl = new HttpClientProperties.Ssl();
