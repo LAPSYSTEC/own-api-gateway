@@ -1,0 +1,70 @@
+{
+  "properties": [
+    {
+      "name": "api-gateway.routes",
+      "type": "java.util.Arrays",
+      "description": "List of routes for API gateway.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "java.lang.String",
+            "description": "Name of the route."
+          },
+          "to": {
+            "type": "java.lang.String",
+            "description": "URL to which the route points."
+          },
+          "from": {
+            "type": "java.lang.String",
+            "description": "Origin URL of the route."
+          },
+          "method": {
+            "type": "java.util.Arrays",
+            "description": "HTTP Method(s) supported by the route.",
+            "items": {
+              "type": "java.lang.String",
+              "enum": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "api-gateway.filter",
+      "type": "java.lang.String",
+      "description": "Filter full class name and location."
+    },
+    {
+      "name": "api-gateway.connectionTimeout",
+      "type": "java.lang.Integer",
+      "description": "The connection timeout in milliseconds."
+    },
+    {
+      "name": "api-gateway.responseTimeout",
+      "type": "java.lang.Integer",
+      "description": "The response timeout in milliseconds."
+    },
+    {
+      "name": "api-gateway.trustInsecureSsl",
+      "type": "java.lang.Boolean",
+      "description": "Indicates whether the HTTP client should trust insecure SSL certificates."
+    },
+    {
+      "name": "api-gateway.exposedHeaders",
+      "type": "java.util.Arrays",
+      "description": "Exposed Headers in all API gateway settings.",
+      "items": {
+        "type": "java.lang.String"
+      }
+    },
+    {
+      "name": "api-gateway.requestHeaders",
+      "type": "java.util.Arrays",
+      "description": "Request Header in all API gateway settings.",
+      "items": {
+        "type": "java.lang.String"
+      }
+    }
+  ]
+}
