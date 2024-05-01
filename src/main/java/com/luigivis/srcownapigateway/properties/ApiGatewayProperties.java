@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.type.classreading.ClassFormatException;
 import org.springframework.http.HttpMethod;
@@ -181,6 +182,7 @@ public class ApiGatewayProperties {
     }
 
     @Bean
+    @Primary
     public HttpClientProperties httpClientPropertiesCustom() {
         log.info("Setting http client properties connectionTimeout {} responseTimeout {} trustInsecureSsl {}"
                 , connectionTimeout, responseTimeout, trustInsecureSsl);
