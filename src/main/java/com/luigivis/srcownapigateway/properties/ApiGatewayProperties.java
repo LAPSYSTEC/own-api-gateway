@@ -4,6 +4,7 @@ import com.luigivis.srcownapigateway.interfaces.OwnApiGatewayFilter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,7 +151,7 @@ public class ApiGatewayProperties {
     @Bean
     public RouteLocator routeLocator() {
         var builderFinal = new RouteLocatorBuilder.Builder(context);
-        if (this.getRoutes().isEmpty()) return builderFinal.build();
+        if (ObjectUtils.isEmpty(this.routes)) return builderFinal.build();
         for (Route route : this.getRoutes()) {
             log.info("Setting ApiGateway name: {} to: {} from: {} method: {}", route.getName(), route.getTo(), route.getFrom(), route.getMethod());
             var httpMethodsArray = route.getMethod().toArray(new HttpMethod[0]);
