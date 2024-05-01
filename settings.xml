@@ -16,7 +16,7 @@
             <repositories>
                 <repository>
                     <id>central</id>
-                    <url>https://maven.pkg.github.com/lugivis/own-api-gateway</url>
+                    <url>https://maven.pkg.github.com/OWNER/REPOSITORY</url>
                     <releases><enabled>true</enabled></releases>
                     <snapshots><enabled>true</enabled></snapshots>
                 </repository>
