@@ -20,27 +20,39 @@ la arquitectura de microservicios.
    git clone https://github.com/luigivis/own-api-gateway.git`
    ```
 
-2. **Estructura del proyecto**
+2. **Usar libreria en otros proyectos**
 
-   El proyecto sigue una estructura básica de Spring Boot:
+   Importa la libreria en maven o gradel
+```xml
+<dependency>
+    <groupId>com.luigivis</groupId>
+    <artifactId>src-own-api-gateway</artifactId>
+    <version>0.1</version>
+</dependency>
+```
+Luego usa
+`@Import(com.luigivis.srcownapigateway.properties.ApiGatewayProperties.class)`
 
-```text
-    `src
-    ├── main
-       ├── java
-       │   └── com
-       │       └── ejemplo
-       │           └── apigateway
-       │               ├── ApiGatewayApplication.java
-       │               ├── controller
-       │               │   └── GatewayController.java
-       │               ├── filter
-       │               │   └── LoggingFilter.java
-       │               └── route
-       │                   └── Route.java
-       └── resources
-           └── application.properties
-                        
+<p></p>
+
+como en el ejemplo de abajo
+
+```Java
+package com.example.demo;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
+
+@SpringBootApplication
+@Import(com.luigivis.srcownapigateway.properties.ApiGatewayProperties.class)
+public class DemoApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+}
+                       
 ```  
 
 3. **Implementación del API Gateway**
@@ -48,86 +60,86 @@ la arquitectura de microservicios.
     - `ApiGatewayApplication.java`: Clase principal de Spring Boot.
     - `TestFilter.java`: Filtro para registrar las solicitudes entrantes.
 
-      4. **Configuración de las rutas**
+4. **Configuración de las rutas**
 
-         Define las rutas y sus correspondientes servicios en el archivo `application.properties` o `application.yaml`:
+   Define las rutas y sus correspondientes servicios en el archivo `application.properties` o `application.yaml`:
 
-            ```properties
-            # Configuración de las rutas
-            api-gateway.filter=com.luigivis.srcownapigateway.filter.TestFilter
-            api-gateway.routes={name=test, to=https://api.restful-api.dev/, from=/objects/**, method=GET, POST}, {name=test1, to=https://api.restful-api.dev/, from=/objects}, {name=test2, to=https://dog.ceo/, from=/api/**}
-            ```
-            ```yaml
-            # Configuración de las rutas
-            api-gateway:
-            filter: "com.luigivis.srcownapigateway.filter.TestFilter"
-            routes:
-               - name: test
-                 to: https://api.restful-api.dev/
-                 from: /objects/**
-                 method: GET, POST
+      ```properties
+      # Configuración de las rutas
+      api-gateway.filter=com.luigivis.srcownapigateway.filter.TestFilter
+      api-gateway.routes={name=test, to=https://api.restful-api.dev/, from=/objects/**, method=GET, POST}, {name=test1, to=https://api.restful-api.dev/, from=/objects}, {name=test2, to=https://dog.ceo/, from=/api/**}
+      ```
+      ```yaml
+      # Configuración de las rutas
+      api-gateway:
+      filter: "com.luigivis.srcownapigateway.filter.TestFilter"
+      routes:
+         - name: test
+           to: https://api.restful-api.dev/
+           from: /objects/**
+           method: GET, POST
        
-               - name: test1
-                 to: https://api.restful-api.dev/
-                 from: /objects
+         - name: test1
+           to: https://api.restful-api.dev/
+           from: /objects
     
-               - name: test2
-                 to: https://dog.ceo/
-                 from: /api/**
-            ```
-         Esto enruta las solicitudes con prefijo `/api1/` al servicio en `http://localhost:8081`, y las solicitudes con
-         prefijo `/api2/` al servicio en `http://localhost:8082`.
-         <br>
-         <br>
-         5. **Filter Example**
+         - name: test2
+           to: https://dog.ceo/
+           from: /api/**
+      ```
+   Esto enruta las solicitudes con prefijo `/api1/` al servicio en `http://localhost:8081`, y las solicitudes con
+   prefijo `/api2/` al servicio en `http://localhost:8082`.
+   <br>
+   <br>
+5. **Filter Example**
          
-            Para especificar el filtro:
-            ```yaml
-            api-gateway:
-            filter: "com.luigivis.srcownapigateway.filter.TestFilter"
-            routes:
-               - name: test
-                 to: https://api.restful-api.dev/
-                 from: /objects/**
-            ```
-            Implemente la interface OwnApiGatewayFilter
+   Para especificar el filtro:
+   ```yaml
+   api-gateway:
+   filter: "com.luigivis.srcownapigateway.filter.TestFilter"
+   routes:
+      - name: test
+        to: https://api.restful-api.dev/
+        from: /objects/**
+   ```
+   Implemente la interface OwnApiGatewayFilter
 
-            ```java
-            import com.luigivis.srcownapigateway.interfaces.OwnApiGatewayFilter;
-            import lombok.extern.slf4j.Slf4j;
-            import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-            import org.springframework.stereotype.Service;
-            import org.springframework.web.server.ServerWebExchange;
-            import reactor.core.publisher.Mono;
+   ```java
+   import com.luigivis.srcownapigateway.interfaces.OwnApiGatewayFilter;
+   import lombok.extern.slf4j.Slf4j;
+   import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+   import org.springframework.stereotype.Service;
+   import org.springframework.web.server.ServerWebExchange;
+   import reactor.core.publisher.Mono;
 
-            @Service
-            @Slf4j
-            public class TestFilter implements OwnApiGatewayFilter {
+   @Service
+   @Slf4j
+   public class TestFilter implements OwnApiGatewayFilter {
    
-                @Override
-                public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+       @Override
+       public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
    
-                    //Own Filter
-                    exchange.getRequest().getHeaders().forEach((key, value) -> {
-                        log.info(key + ":" + value);
-                    });
-                    return chain.filter(exchange);
-                }
+           //Own Filter
+           exchange.getRequest().getHeaders().forEach((key, value) -> {
+               log.info(key + ":" + value);
+           });
+           return chain.filter(exchange);
+       }
    
-                public void checkValue(ServerWebExchange exchange) {
-                    log.info("Exchange {}", exchange);
-                }
+       public void checkValue(ServerWebExchange exchange) {
+           log.info("Exchange {}", exchange);
+       }
    
-            }
+   }
    
-            ```
+   ```
    
-            Logs si el filtro fue cargado exitosamente
-            ```text
-               c.l.s.properties.ApiGatewayProperties    : Validating custom filter com.luigivis.srcownapigateway.filter.TestFilter
-               c.l.s.properties.ApiGatewayProperties    : Success: Found one implementation of com.luigivis.srcownapigateway.filter.TestFilter as a OwnApiGatewayFilter
-               c.l.s.properties.ApiGatewayProperties    : Filter success on load requirement com.luigivis.srcownapigateway.filter.TestFilter
-            ```
+   Logs si el filtro fue cargado exitosamente
+   ```text
+      c.l.s.properties.ApiGatewayProperties    : Validating custom filter com.luigivis.srcownapigateway.filter.TestFilter
+      c.l.s.properties.ApiGatewayProperties    : Success: Found one implementation of com.luigivis.srcownapigateway.filter.TestFilter as a OwnApiGatewayFilter
+      c.l.s.properties.ApiGatewayProperties    : Filter success on load requirement com.luigivis.srcownapigateway.filter.TestFilter
+   ```
 
 6. **Ejecución del proyecto**
 

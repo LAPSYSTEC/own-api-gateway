@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.type.classreading.ClassFormatException;
 import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Modifier;
 import java.util.Collections;
@@ -29,6 +30,7 @@ import java.util.List;
 @Slf4j
 @Configuration
 @ConfigurationProperties(prefix = "api-gateway")
+@Component
 public class ApiGatewayProperties {
 
     @Autowired
@@ -61,6 +63,7 @@ public class ApiGatewayProperties {
      */
     @Setter
     @Getter
+    @Component
     public static class Route {
         /**
          * Name of the route.
