@@ -8,10 +8,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @SpringBootApplication
-public class SrcOwnApiGatewayApplication {
+public class OwnApiGatewayApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SrcOwnApiGatewayApplication.class, args);
+        SpringApplication.run(OwnApiGatewayApplication.class, args);
     }
 
 }

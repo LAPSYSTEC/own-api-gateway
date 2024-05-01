@@ -4,9 +4,11 @@ import com.luigivis.srcownapigateway.interfaces.OwnApiGatewayFilter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.gateway.config.HttpClientProperties;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.ApplicationContext;
@@ -17,8 +19,13 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.type.classreading.ClassFormatException;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import java.lang.reflect.Modifier;
+import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,7 +44,7 @@ public class ApiGatewayProperties {
     private ConfigurableApplicationContext context;
 
     /**
-     * Lista de rutas de la puerta de enlace de la API.
+     * List of routes for api gateway
      * <p>
      * to: https://any.api.com/ from: /objects/**
      * <p>
@@ -49,12 +56,54 @@ public class ApiGatewayProperties {
     private List<Route> routes;
 
     /**
-     * Filter full class name and location <p>com.luigivis.srcownapigateway.filter.TestFilter</p>
-     * <p>Filter need <strong>implements OwnApiGatewayFilter</strong></p>
+     * Filter full class name and location <p>com.luigivis.ownapigateway.filter.TestFilter</p>
+     * <p>Filter need <strong>implements ownapigatewayFilter</strong></p>
      */
     @Getter
     @Setter
     private String filter;
+
+    /**
+     * The connection timeout in milliseconds.
+     */
+    @Getter
+    @Setter
+    private int connectionTimeout;
+
+    /**
+     * The response timeout in milliseconds.
+     */
+    @Getter
+    @Setter
+    private int responseTimeout;
+
+    /**
+     * Indicates whether the HTTP client should trust insecure SSL certificates.
+     * Default is true.
+     */
+    @Getter
+    @Setter
+    private Boolean trustInsecureSsl = true;
+
+    /**
+     * Exposed Headers in all api gateway setting, for example you need to send <strong>Authorization</strong> from server in the header
+     * exposedHeaders: JWT,
+     *
+     * @default '*'
+     */
+    @Getter
+    @Setter
+    private List<String> exposedHeaders = Collections.singletonList("*");
+
+    /**
+     * Request Header in all api gateway setting, is for allow header in the request for example you need allow custom header
+     * requestHeaders: Authorization
+     *
+     * @default '*'
+     */
+    @Getter
+    @Setter
+    private List<String> requestHeaders = Collections.singletonList("*");
 
     /**
      * Static class defining a route of the API Gateway.
@@ -99,7 +148,7 @@ public class ApiGatewayProperties {
     }
 
     @Bean
-    public RouteLocator routeLocator(RouteLocatorBuilder builder) {
+    public RouteLocator routeLocator() {
         var builderFinal = new RouteLocatorBuilder.Builder(context);
         for (Route route : this.getRoutes()) {
             log.info("Setting ApiGateway name: {} to: {} from: {} method: {}", route.getName(), route.getTo(), route.getFrom(), route.getMethod());
@@ -112,6 +161,39 @@ public class ApiGatewayProperties {
             );
         }
         return builderFinal.build();
+    }
+
+    @Bean
+    public CorsWebFilter corsFilter() {
+        var corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
+        corsConfiguration.setAllowedHeaders(requestHeaders);
+        corsConfiguration.setExposedHeaders(exposedHeaders);
+        corsConfiguration.addAllowedHeader("accept");
+        corsConfiguration.addAllowedHeader("authorization");
+        corsConfiguration.addAllowedHeader("cookie");
+        var source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return new CorsWebFilter(source);
+    }
+
+    @Bean
+    public HttpClientProperties httpClientProperties() {
+        log.info("Setting http client properties connectionTimeout {} responseTimeout {} trustInsecureSsl {}"
+                , connectionTimeout, responseTimeout, trustInsecureSsl);
+        var http = new HttpClientProperties();
+
+        if (ObjectUtils.isEmpty(this.connectionTimeout))
+            http.setConnectTimeout(this.connectionTimeout);
+
+        if (ObjectUtils.isEmpty(this.responseTimeout))
+            http.setResponseTimeout(Duration.ofSeconds(this.responseTimeout));
+
+        var ssl = new HttpClientProperties.Ssl();
+        ssl.setUseInsecureTrustManager(this.trustInsecureSsl);
+        http.setSsl(ssl);
+        return http;
     }
 
     public void validateFilter() throws ClassFormatException {
@@ -146,10 +228,10 @@ public class ApiGatewayProperties {
         }
 
         if (testFilterCount > 1) {
-            throw new IllegalStateException("Error: Multiple implementations of " + this.filter + " were found as GlobalFilters");
+            throw new IllegalStateException("Error: Multiple implementations of were found as ownapigatewayFilter");
         }
         if (testFilterCount == 1) {
-            log.info("Success: Found one implementation of {} as a OwnApiGatewayFilter", this.filter);
+            log.info("Success: Found one implementation of {} as a ownapigatewayFilter", this.filter);
             validateFilter();
             return true;
         }

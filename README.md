@@ -31,7 +31,7 @@ la arquitectura de microservicios.
 </dependency>
 ```
 Luego usa
-`@Import(com.luigivis.srcownapigateway.properties.ApiGatewayProperties.class)`
+`@Import(com.luigivis.ownapigateway.properties.ApiGatewayProperties.class)`
 
 <p></p>
 
@@ -45,7 +45,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@Import(com.luigivis.srcownapigateway.properties.ApiGatewayProperties.class)
+@Import(com.luigivis.ownapigateway.properties.ApiGatewayProperties.class)
 public class DemoApplication {
 
     public static void main(String[] args) {
@@ -66,13 +66,13 @@ public class DemoApplication {
 
       ```properties
       # Configuración de las rutas
-      api-gateway.filter=com.luigivis.srcownapigateway.filter.TestFilter
+      api-gateway.filter=com.luigivis.ownapigateway.filter.TestFilter
       api-gateway.routes={name=test, to=https://api.restful-api.dev/, from=/objects/**, method=GET, POST}, {name=test1, to=https://api.restful-api.dev/, from=/objects}, {name=test2, to=https://dog.ceo/, from=/api/**}
       ```
       ```yaml
       # Configuración de las rutas
       api-gateway:
-      filter: "com.luigivis.srcownapigateway.filter.TestFilter"
+      filter: "com.luigivis.ownapigateway.filter.TestFilter"
       routes:
          - name: test
            to: https://api.restful-api.dev/
@@ -96,16 +96,16 @@ public class DemoApplication {
    Para especificar el filtro:
    ```yaml
    api-gateway:
-   filter: "com.luigivis.srcownapigateway.filter.TestFilter"
+   filter: "com.luigivis.ownapigateway.filter.TestFilter"
    routes:
       - name: test
         to: https://api.restful-api.dev/
         from: /objects/**
    ```
-   Implemente la interface OwnApiGatewayFilter
+   Implemente la interface ownapigatewayFilter
 
    ```java
-   import com.luigivis.srcownapigateway.interfaces.OwnApiGatewayFilter;
+   import com.luigivis.ownapigateway.interfaces.ownapigatewayFilter;
    import lombok.extern.slf4j.Slf4j;
    import org.springframework.cloud.gateway.filter.GatewayFilterChain;
    import org.springframework.stereotype.Service;
@@ -114,7 +114,7 @@ public class DemoApplication {
 
    @Service
    @Slf4j
-   public class TestFilter implements OwnApiGatewayFilter {
+   public class TestFilter implements ownapigatewayFilter {
    
        @Override
        public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -136,9 +136,9 @@ public class DemoApplication {
    
    Logs si el filtro fue cargado exitosamente
    ```text
-      c.l.s.properties.ApiGatewayProperties    : Validating custom filter com.luigivis.srcownapigateway.filter.TestFilter
-      c.l.s.properties.ApiGatewayProperties    : Success: Found one implementation of com.luigivis.srcownapigateway.filter.TestFilter as a OwnApiGatewayFilter
-      c.l.s.properties.ApiGatewayProperties    : Filter success on load requirement com.luigivis.srcownapigateway.filter.TestFilter
+      c.l.s.properties.ApiGatewayProperties    : Validating custom filter com.luigivis.ownapigateway.filter.TestFilter
+      c.l.s.properties.ApiGatewayProperties    : Success: Found one implementation of com.luigivis.ownapigateway.filter.TestFilter as a ownapigatewayFilter
+      c.l.s.properties.ApiGatewayProperties    : Filter success on load requirement com.luigivis.ownapigateway.filter.TestFilter
    ```
 
 6. **Ejecución del proyecto**
