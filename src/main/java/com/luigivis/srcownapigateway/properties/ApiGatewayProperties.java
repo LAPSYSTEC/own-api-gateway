@@ -181,7 +181,7 @@ public class ApiGatewayProperties {
     }
 
     @Bean
-    public HttpClientProperties httpClientProperties() {
+    public HttpClientProperties httpClientPropertiesCustom() {
         log.info("Setting http client properties connectionTimeout {} responseTimeout {} trustInsecureSsl {}"
                 , connectionTimeout, responseTimeout, trustInsecureSsl);
         var http = new HttpClientProperties();

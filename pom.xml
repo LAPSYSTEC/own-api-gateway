@@ -11,7 +11,7 @@
 
     <groupId>com.luigivis</groupId>
     <artifactId>own-api-gateway</artifactId>
-    <version>0.10</version>
+    <version>0.11</version>
     <name>own-api-gateway</name>
     <description>Custom own api gateway, more easy, more practical</description>
 
