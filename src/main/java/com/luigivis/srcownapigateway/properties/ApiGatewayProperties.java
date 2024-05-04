@@ -118,15 +118,6 @@ public class ApiGatewayProperties {
     @Setter
     private Boolean reactiveApp = true;
 
-    private static void onApplicationEvent(ApplicationStartedEvent event) {
-        try {
-        } catch (BeanCreationException exception) {
-            if (isSpringMvcIncompatibleException(exception)) {
-                event.getSpringApplication().addListeners(new MvcCompatibilityChecker());
-            }
-        }
-    }
-
     /**
      * Static class defining a route of the API Gateway.
      * <p>
@@ -268,11 +259,19 @@ public class ApiGatewayProperties {
 
     @Bean
     public ApplicationListener<ApplicationStartedEvent> applicationListener() {
-        return ApiGatewayProperties::onApplicationEvent;
+        return event -> {
+            try {
+            }catch (BeanCreationException exception){
+                if (isSpringMvcIncompatibleException(exception)) {
+                    event.getSpringApplication().addListeners(new MvcCompatibilityChecker());
+                }
+            }
+        };
     }
 
     @Bean
     public WebApplicationType webApplicationType() {
+        log.info("Own Api Gateway Reactive {}", this.reactiveApp);
         return switch (this.reactiveApp.toString()) {
             case "true" -> WebApplicationType.REACTIVE;
             case "false" -> WebApplicationType.SERVLET;
