@@ -7,12 +7,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.event.ApplicationFailedEvent;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.web.reactive.context.ReactiveWebServerApplicationContext;
 import org.springframework.cloud.gateway.config.HttpClientProperties;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -106,6 +113,19 @@ public class ApiGatewayProperties {
     @Getter
     @Setter
     private List<String> requestHeaders = Collections.singletonList("*");
+
+    @Getter
+    @Setter
+    private Boolean reactiveApp = true;
+
+    private static void onApplicationEvent(ApplicationStartedEvent event) {
+        try {
+        } catch (BeanCreationException exception) {
+            if (isSpringMvcIncompatibleException(exception)) {
+                event.getSpringApplication().addListeners(new MvcCompatibilityChecker());
+            }
+        }
+    }
 
     /**
      * Static class defining a route of the API Gateway.
@@ -244,6 +264,36 @@ public class ApiGatewayProperties {
             return true;
         }
         return true;
+    }
+
+    @Bean
+    public ApplicationListener<ApplicationStartedEvent> applicationListener() {
+        return ApiGatewayProperties::onApplicationEvent;
+    }
+
+    @Bean
+    public WebApplicationType webApplicationType() {
+        return switch (this.reactiveApp.toString()) {
+            case "true" -> WebApplicationType.REACTIVE;
+            case "false" -> WebApplicationType.SERVLET;
+            default -> WebApplicationType.NONE;
+        };
+    }
+
+    static class MvcCompatibilityChecker implements ApplicationListener<ApplicationFailedEvent> {
+        @Override
+        public void onApplicationEvent(ApplicationFailedEvent event) {
+            var throwable = event.getException();
+            if (throwable != null && isSpringMvcIncompatibleException(throwable)) {
+                System.err.println("Spring MVC found on classpath, which is incompatible with Own Api Gateway.");
+                System.err.println("Please set api-gateway.reactive=true or remove spring-boot-starter-web dependency.");
+            }
+        }
+    }
+
+    protected static boolean isSpringMvcIncompatibleException(Throwable throwable) {
+        String message = throwable.getMessage();
+        return message != null && message.contains("Spring MVC found on classpath");
     }
 
 }
