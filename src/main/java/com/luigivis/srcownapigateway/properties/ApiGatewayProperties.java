@@ -256,45 +256,18 @@ public class ApiGatewayProperties {
         }
         return true;
     }
-
-    @Bean
-    public ApplicationListener<ApplicationStartedEvent> applicationListener() {
-        return event -> {
-            try {
-            }catch (BeanCreationException exception){
-                if (isSpringMvcIncompatibleException(exception)) {
-                    event.getSpringApplication().addListeners(new MvcCompatibilityChecker());
-                }
-            }
-        };
-    }
-
+    
     @Bean
     public WebApplicationType webApplicationType() {
         log.info("Own Api Gateway Reactive {}", this.reactiveApp);
-        return switch (this.reactiveApp.toString()) {
-            case "true" -> WebApplicationType.REACTIVE;
-            case "false" -> WebApplicationType.SERVLET;
-            default -> WebApplicationType.NONE;
-        };
-    }
+        return WebApplicationType.REACTIVE;
+//        return switch (this.reactiveApp.toString()) {
+//            case "true" -> WebApplicationType.REACTIVE;
+//            case "false" -> WebApplicationType.SERVLET;
+//            default -> WebApplicationType.NONE;
+//    };
 
-    static class MvcCompatibilityChecker implements ApplicationListener<ApplicationFailedEvent> {
-        @Override
-        public void onApplicationEvent(ApplicationFailedEvent event) {
-            var throwable = event.getException();
-            if (throwable != null && isSpringMvcIncompatibleException(throwable)) {
-                System.err.println("Spring MVC found on classpath, which is incompatible with Own Api Gateway.");
-                System.err.println("Please set api-gateway.reactive=true or remove spring-boot-starter-web dependency.");
-            }
-        }
     }
-
-    protected static boolean isSpringMvcIncompatibleException(Throwable throwable) {
-        String message = throwable.getMessage();
-        return message != null && message.contains("Spring MVC found on classpath");
-    }
-
 }
 
 
