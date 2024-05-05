@@ -4,22 +4,14 @@ import com.luigivis.srcownapigateway.interfaces.OwnApiGatewayFilter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.event.ApplicationFailedEvent;
-import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.web.reactive.context.ReactiveWebServerApplicationContext;
 import org.springframework.cloud.gateway.config.HttpClientProperties;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -114,9 +106,14 @@ public class ApiGatewayProperties {
     @Setter
     private List<String> requestHeaders = Collections.singletonList("*");
 
+    /**
+     * Define trusted origin.
+     * <p>
+     * Each trusted origin are "secure" and de own api gateway can allow the petition from this trusted origins and supported HTTP method(s).
+     */
     @Getter
     @Setter
-    private Boolean reactiveApp = true;
+    private List<String> trustedOrigins = Collections.singletonList("http://localhost:3000");
 
     /**
      * Static class defining a route of the API Gateway.
@@ -180,6 +177,7 @@ public class ApiGatewayProperties {
     @Bean
     public CorsWebFilter corsFilter() {
         var corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(trustedOrigins);
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
         corsConfiguration.setAllowedHeaders(requestHeaders);
@@ -200,9 +198,11 @@ public class ApiGatewayProperties {
         var http = new HttpClientProperties();
 
         if (ObjectUtils.isNotEmpty(this.connectionTimeout))
+            log.info("Setting connectionTimeout {}", connectionTimeout);
             http.setConnectTimeout(this.connectionTimeout);
 
         if (ObjectUtils.isNotEmpty(this.responseTimeout))
+            log.info("Setting responseTimeout {}", responseTimeout);
             http.setResponseTimeout(Duration.ofSeconds(this.responseTimeout));
 
         var ssl = new HttpClientProperties.Ssl();
@@ -257,17 +257,6 @@ public class ApiGatewayProperties {
         return true;
     }
 
-    @Bean
-    public WebApplicationType webApplicationType() {
-        log.info("Own Api Gateway Reactive {}", this.reactiveApp);
-        return WebApplicationType.REACTIVE;
-//        return switch (this.reactiveApp.toString()) {
-//            case "true" -> WebApplicationType.REACTIVE;
-//            case "false" -> WebApplicationType.SERVLET;
-//            default -> WebApplicationType.NONE;
-//    };
-
-    }
 }
 
 
