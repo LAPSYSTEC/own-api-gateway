@@ -199,7 +199,7 @@ public class ApiGatewayProperties {
 
         if (ObjectUtils.isNotEmpty(this.connectionTimeout))
             log.info("Setting connectionTimeout {}", connectionTimeout);
-            http.setConnectTimeout(this.connectionTimeout);
+            http.setConnectTimeout(this.connectionTimeout * 1000);
 
         if (ObjectUtils.isNotEmpty(this.responseTimeout))
             log.info("Setting responseTimeout {}", responseTimeout);
