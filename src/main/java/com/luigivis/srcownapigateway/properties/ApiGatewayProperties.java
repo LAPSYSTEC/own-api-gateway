@@ -256,7 +256,7 @@ public class ApiGatewayProperties {
         }
         return true;
     }
-    
+
     @Bean
     public WebApplicationType webApplicationType() {
         log.info("Own Api Gateway Reactive {}", this.reactiveApp);
