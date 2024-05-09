@@ -1,28 +1,26 @@
-# Construcción de un API Gateway en Spring Boot
+# Building an API Gateway in Spring Boot
 
-Este proyecto muestra cómo construir un API Gateway básico utilizando Spring Boot sin depender de bibliotecas externas.
-Un API Gateway actúa como un punto de entrada único para todas las solicitudes de clientes hacia diferentes servicios en
-la arquitectura de microservicios.
+This project demonstrates how to build a basic API Gateway using Spring Boot without relying on external libraries. An API Gateway acts as a single entry point for all client requests to different services in a microservices architecture.
 
-## Requisitos
+## Requirements
 
 - Java JDK 21
 - Maven
 - Spring Boot 3+
 
-## Pasos a seguir
+## Steps to Follow
 
-1. **Configuración del proyecto**
+1. **Project Setup**
 
-   Clona este repositorio en tu máquina local:
+   Clone this repository to your local machine:
 
    ```shell
-   git clone https://github.com/luigivis/own-api-gateway.git`
+   git clone https://github.com/luigivis/own-api-gateway.git
    ```
 
-2. **Usar libreria en otros proyectos**
+2. **Using the library in other projects**
 
-   Importa la libreria en maven o gradel
+   Import the library in Maven or Gradle:
 ```xml
 <dependency>
     <groupId>com.luigivis</groupId>
@@ -30,12 +28,12 @@ la arquitectura de microservicios.
     <version>0.1</version>
 </dependency>
 ```
-Luego usa
-`@Import(com.luigivis.ownapigateway.properties.ApiGatewayProperties.class)`
+   Then use:
+   `@Import(com.luigivis.ownapigateway.properties.ApiGatewayProperties.class)`
 
 <p></p>
 
-como en el ejemplo de abajo
+   as shown in the example below:
 
 ```Java
 package com.example.demo;
@@ -55,22 +53,22 @@ public class DemoApplication {
                        
 ```  
 
-3. **Implementación del API Gateway**
+3. **API Gateway Implementation**
 
-    - `ApiGatewayApplication.java`: Clase principal de Spring Boot.
-    - `TestFilter.java`: Filtro para registrar las solicitudes entrantes.
+    - `ApiGatewayApplication.java`: Main Spring Boot class.
+    - `TestFilter.java`: Filter to log incoming requests.
 
-4. **Configuración de las rutas**
+4. **Routes Configuration**
 
-   Define las rutas y sus correspondientes servicios en el archivo `application.properties` o `application.yaml`:
+   Define routes and their corresponding services in the `application.properties` or `application.yaml` file:
 
       ```properties
-      # Configuración de las rutas
+      # Routes Configuration
       api-gateway.filter=com.luigivis.ownapigateway.filter.TestFilter
       api-gateway.routes={name=test, to=https://api.restful-api.dev/, from=/objects/**, method=GET, POST}, {name=test1, to=https://api.restful-api.dev/, from=/objects}, {name=test2, to=https://dog.ceo/, from=/api/**}
       ```
       ```yaml
-      # Configuración de las rutas
+      # Routes Configuration
       api-gateway:
       filter: "com.luigivis.ownapigateway.filter.TestFilter"
       routes:
@@ -87,13 +85,13 @@ public class DemoApplication {
            to: https://dog.ceo/
            from: /api/**
       ```
-   Esto enruta las solicitudes con prefijo `/api1/` al servicio en `http://localhost:8081`, y las solicitudes con
-   prefijo `/api2/` al servicio en `http://localhost:8082`.
+   This routes requests with prefix `/api1/` to the service at `http://localhost:8081`, and requests with
+   prefix `/api2/` to the service at `http://localhost:8082`.
    <br>
    <br>
 5. **Filter Example**
          
-   Para especificar el filtro:
+   To specify the filter:
    ```yaml
    api-gateway:
    filter: "com.luigivis.ownapigateway.filter.TestFilter"
@@ -102,7 +100,7 @@ public class DemoApplication {
         to: https://api.restful-api.dev/
         from: /objects/**
    ```
-   Implemente la interface ownapigatewayFilter
+   Implement the `ownapigatewayFilter` interface.
 
    ```java
    import com.luigivis.ownapigateway.interfaces.ownapigatewayFilter;
@@ -119,7 +117,7 @@ public class DemoApplication {
        @Override
        public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
    
-           //Own Filter
+           // Own Filter
            exchange.getRequest().getHeaders().forEach((key, value) -> {
                log.info(key + ":" + value);
            });
@@ -134,48 +132,45 @@ public class DemoApplication {
    
    ```
    
-   Logs si el filtro fue cargado exitosamente
+   Logs if the filter was successfully loaded.
    ```text
       c.l.s.properties.ApiGatewayProperties    : Validating custom filter com.luigivis.ownapigateway.filter.TestFilter
-      c.l.s.properties.ApiGatewayProperties    : Success: Found one implementation of com.luigivis.ownapigateway.filter.TestFilter as a ownapigatewayFilter
+      c.l.s.properties.ApiGatewayProperties    : Success: Found one implementation of com.luigivis.ownapigateway.filter.TestFilter as an ownapigatewayFilter
       c.l.s.properties.ApiGatewayProperties    : Filter success on load requirement com.luigivis.ownapigateway.filter.TestFilter
    ```
 
-6. **Ejecución del proyecto**
+6. **Running the Project**
 
-   Ejecuta el proyecto utilizando Maven:
+   Run the project using Maven:
 
-   arduino
+   ```shell
+   mvn spring-boot:run
+   ```
 
-   Copy code
-    ```shell
-    mvn spring-boot:run
-    ```
+7. **Testing the API Gateway**
 
-7. **Prueba del API Gateway**
+   Send requests through the API Gateway to the corresponding services using the defined routes.
 
-   Envía solicitudes a través del API Gateway a los servicios correspondientes utilizando las rutas definidas.
+   For example, to access the `api1` service, send a request to `http://localhost:8080/api1/...`.
 
-   Por ejemplo, para acceder al servicio `api1`, envía una solicitud a `http://localhost:8080/api1/...`.
+8. **Deployment to Production Environment**
 
-8. **Despliegue en entorno de producción**
-
-   Para desplegar el API Gateway en un entorno de producción, genera un archivo JAR ejecutable utilizando el siguiente
-   comando:
+   To deploy the API Gateway in a production environment, generate an executable JAR file using the following
+   command:
     ```shell
     mvn package
     ```
 
-   Luego, despliega el JAR generado en tu servidor de producción.
+   Then, deploy the generated JAR on your production server.
 
-## Contribuciones
+## Contributions
 
-Si deseas contribuir a este proyecto, por favor sigue estos pasos:
+If you wish to contribute to this project, please follow these steps:
 
-1. Haz un fork del repositorio.
-2. Crea una rama para tu funcionalidad: `git checkout -b feature/NuevaFuncionalidad`.
-3. Realiza tus cambios y haz commits: `git commit -am 'Agrega nueva funcionalidad'`.
-4. Sube tus cambios: `git push origin feature/NuevaFuncionalidad`.
-5. Abre un Pull Request en GitHub.
+1. Fork the repository.
+2. Create a branch for your feature: `git checkout -b feature/NewFeature`.
+3. Make your changes and commit them: `git commit -am 'Add new feature'`.
+4. Push your changes: `git push origin feature/NewFeature`.
+5. Open a Pull Request on GitHub.
 
-¡Gracias por contribuir!
+Thank you for contributing!
