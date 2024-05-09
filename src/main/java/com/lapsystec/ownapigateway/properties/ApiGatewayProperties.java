@@ -1,6 +1,6 @@
-package com.luigivis.srcownapigateway.properties;
+package com.lapsystec.ownapigateway.properties;
 
-import com.luigivis.srcownapigateway.interfaces.OwnApiGatewayFilter;
+import com.lapsystec.ownapigateway.interfaces.OwnApiGatewayFilter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -30,11 +30,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Clase que representa las propiedades de la puerta de enlace de la API.
- * <p>
- * Estas propiedades incluyen las rutas de la puerta de enlace de la API definidas en el archivo de configuración.
- */
 @Slf4j
 @Configuration
 @ConfigurationProperties(prefix = "api-gateway")
@@ -226,6 +221,7 @@ public class ApiGatewayProperties {
         }
     }
 
+    @SuppressWarnings("unused")
     @Bean
     @Order(0)
     public Boolean validateUniqueFilter(ApplicationContext applicationContext) throws ClassFormatException {

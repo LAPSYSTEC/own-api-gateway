@@ -1,4 +1,4 @@
-package com.luigivis.srcownapigateway.interfaces;
+package com.lapsystec.ownapigateway.interfaces;
 
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 

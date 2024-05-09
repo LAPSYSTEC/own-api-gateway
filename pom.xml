@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.luigivis</groupId>
+    <groupId>com.lapsystec</groupId>
     <artifactId>own-api-gateway</artifactId>
-    <version>0.21</version>
+    <version>0.1.0</version>
     <name>own-api-gateway</name>
     <description>Custom own api gateway, more easy, more practical</description>
 
