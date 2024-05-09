@@ -15,7 +15,7 @@ This project demonstrates how to build a basic API Gateway using Spring Boot wit
    Clone this repository to your local machine:
 
    ```shell
-   git clone https://github.com/luigivis/own-api-gateway.git
+   git clone https://github.com/lapsystec/own-api-gateway.git
    ```
 
 2. **Using the library in other projects**
@@ -23,13 +23,13 @@ This project demonstrates how to build a basic API Gateway using Spring Boot wit
    Import the library in Maven or Gradle:
 ```xml
 <dependency>
-    <groupId>com.luigivis</groupId>
-    <artifactId>src-own-api-gateway</artifactId>
+    <groupId>com.lapsystec</groupId>
+    <artifactId>own-api-gateway</artifactId>
     <version>0.1</version>
 </dependency>
 ```
    Then use:
-   `@Import(com.luigivis.ownapigateway.properties.ApiGatewayProperties.class)`
+   `@Import(com.lapsystec.ownapigateway.properties.ApiGatewayProperties.class)`
 
 <p></p>
 
@@ -43,7 +43,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@Import(com.luigivis.ownapigateway.properties.ApiGatewayProperties.class)
+@Import(com.lapsystec.ownapigateway.properties.ApiGatewayProperties.class)
 public class DemoApplication {
 
     public static void main(String[] args) {
@@ -64,13 +64,13 @@ public class DemoApplication {
 
       ```properties
       # Routes Configuration
-      api-gateway.filter=com.luigivis.ownapigateway.filter.TestFilter
+      api-gateway.filter=com.lapsystec.ownapigateway.filter.TestFilter
       api-gateway.routes={name=test, to=https://api.restful-api.dev/, from=/objects/**, method=GET, POST}, {name=test1, to=https://api.restful-api.dev/, from=/objects}, {name=test2, to=https://dog.ceo/, from=/api/**}
       ```
       ```yaml
       # Routes Configuration
       api-gateway:
-      filter: "com.luigivis.ownapigateway.filter.TestFilter"
+      filter: "com.lapsystec.ownapigateway.filter.TestFilter"
       routes:
          - name: test
            to: https://api.restful-api.dev/
@@ -94,7 +94,7 @@ public class DemoApplication {
    To specify the filter:
    ```yaml
    api-gateway:
-   filter: "com.luigivis.ownapigateway.filter.TestFilter"
+   filter: "com.lapsystec.ownapigateway.filter.TestFilter"
    routes:
       - name: test
         to: https://api.restful-api.dev/
@@ -103,7 +103,7 @@ public class DemoApplication {
    Implement the `ownapigatewayFilter` interface.
 
    ```java
-   import com.luigivis.ownapigateway.interfaces.ownapigatewayFilter;
+   import com.lapsystec.ownapigateway.interfaces.ownapigatewayFilter;
    import lombok.extern.slf4j.Slf4j;
    import org.springframework.cloud.gateway.filter.GatewayFilterChain;
    import org.springframework.stereotype.Service;
@@ -134,9 +134,9 @@ public class DemoApplication {
    
    Logs if the filter was successfully loaded.
    ```text
-      c.l.s.properties.ApiGatewayProperties    : Validating custom filter com.luigivis.ownapigateway.filter.TestFilter
-      c.l.s.properties.ApiGatewayProperties    : Success: Found one implementation of com.luigivis.ownapigateway.filter.TestFilter as an ownapigatewayFilter
-      c.l.s.properties.ApiGatewayProperties    : Filter success on load requirement com.luigivis.ownapigateway.filter.TestFilter
+      c.l.s.properties.ApiGatewayProperties    : Validating custom filter com.lapsystec.ownapigateway.filter.TestFilter
+      c.l.s.properties.ApiGatewayProperties    : Success: Found one implementation of com.lapsystec.ownapigateway.filter.TestFilter as an ownapigatewayFilter
+      c.l.s.properties.ApiGatewayProperties    : Filter success on load requirement com.lapsystec.ownapigateway.filter.TestFilter
    ```
 
 6. **Running the Project**
