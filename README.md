@@ -70,20 +70,20 @@ public class DemoApplication {
       ```yaml
       # Routes Configuration
       api-gateway:
-      filter: "com.lapsystec.ownapigateway.filter.TestFilter"
-      routes:
-         - name: test
-           to: https://api.restful-api.dev/
-           from: /objects/**
-           method: GET, POST
+         filter: "com.lapsystec.ownapigateway.filter.TestFilter"
+         routes:
+            - name: test
+              to: https://api.restful-api.dev/
+              from: /objects/**
+              method: GET, POST
+          
+            - name: test1
+              to: https://api.restful-api.dev/
+              from: /objects
        
-         - name: test1
-           to: https://api.restful-api.dev/
-           from: /objects
-    
-         - name: test2
-           to: https://dog.ceo/
-           from: /api/**
+            - name: test2
+              to: https://dog.ceo/
+              from: /api/**
       ```
    This routes requests with prefix `/api1/` to the service at `http://localhost:8081`, and requests with
    prefix `/api2/` to the service at `http://localhost:8082`.
@@ -94,11 +94,11 @@ public class DemoApplication {
    To specify the filter:
    ```yaml
    api-gateway:
-   filter: "com.lapsystec.ownapigateway.filter.TestFilter"
-   routes:
-      - name: test
-        to: https://api.restful-api.dev/
-        from: /objects/**
+      filter: "com.lapsystec.ownapigateway.filter.TestFilter"
+      routes:
+         - name: test
+           to: https://api.restful-api.dev/
+           from: /objects/**
    ```
    Implement the `ownapigatewayFilter` interface.
 
